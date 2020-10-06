@@ -1,17 +1,10 @@
 package com.git.invoier.service;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.git.invoier.model.Basket;
 import com.git.invoier.model.BasketProduct;
-import com.git.invoier.model.ProductType;
+import com.git.invoier.util.AppConstants;
 
 public class InvoiceService {
-
-	private final static List<ProductType> TAX_EXEMPTED_TYPES = Arrays.asList(ProductType.FOOD, ProductType.TOYS);
-	private final static double VAT_TAX = 0.125;
-	private final static double IMPORT_TAX = 0.024;
 
 	public void print(Basket basket) {
 
@@ -19,6 +12,9 @@ public class InvoiceService {
 		double totalVAT = 0d;
 		double totalAdditionalTax = 0d;
 
+		/**
+		 * printing hardcoded header
+		 */
 		System.out.println("NAME | QTY | UNIT_COST | COST");
 		System.out.println("-----------------------------");
 
@@ -27,19 +23,21 @@ public class InvoiceService {
 			double totalPriceForBasketProduct = basketProduct.getTotalPrice();
 			subtotal += totalPriceForBasketProduct;
 
-			if (!TAX_EXEMPTED_TYPES.contains(basketProduct.getType())) {
-				totalVAT += VAT_TAX * totalPriceForBasketProduct;
+			if (!AppConstants.TAX_EXEMPTED_TYPES.contains(basketProduct.getType())) {
+				totalVAT += AppConstants.VAT_TAX * totalPriceForBasketProduct;
 			}
 
 			if (basketProduct.getIsImported()) {
-				totalAdditionalTax += IMPORT_TAX * totalPriceForBasketProduct;
+				totalAdditionalTax += AppConstants.IMPORT_TAX * totalPriceForBasketProduct;
 			}
 
 			System.out.printf("%s | %s | %.2f | %.2f%n", basketProduct.getName(), basketProduct.getQuanity(),
 					basketProduct.getUnitPrice(), totalPriceForBasketProduct);
 
 		}
-
+		/**
+		 * printing final total footer
+		 */
 		System.out.printf("%nSubtotal : %.2f%nVAT : %.2f%nAdditional TAX : %.2f%nSubtotal : %.2f%n", subtotal, totalVAT,
 				totalAdditionalTax, subtotal + totalVAT + totalAdditionalTax);
 
